@@ -36,10 +36,19 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }))
+
+
+app.set("trust proxy", 1);
+
 app.use(session({
   secret: 'secret',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    sameSite: "none",
+    secure: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
 }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -88,7 +97,7 @@ function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
 passport.use(new TwitterStrategy({
   consumerKey: `${process.env.TWITTER_CLIENT_ID}`, 
   consumerSecret: `${process.env.TWITTER_CLIENT_SECRET}`,
-  callbackURL: "http://localhost:4000/auth/twitter/callback"
+  callbackURL: "/auth/twitter/callback"
 },
 function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
   // successfull login
@@ -118,7 +127,7 @@ function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
 passport.use(new GithubStrategy({
   clientID: `${process.env.GITHUB_CLIENT_ID}`,
   clientSecret: `${process.env.GITHUB_CLIENT_SECRET}`,
-  callbackURL: "http://localhost:4000/auth/github/callback"
+  callbackURL: "/auth/github/callback"
 },
 function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
   // successfull login
