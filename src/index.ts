@@ -14,20 +14,10 @@ dotenv.config();
 
 const app = express();
 
-// const { MongoClient } = require('mongodb');
-// const uri = "mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-// client.connect(err => {
-//   console.log(err);
-//   const collection = client.db("oauth").collection("devices");
-//   console.log(collection);
-//   // perform actions on the collection object
-//   client.close();
-// });
+
 mongoose.connect(`${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}${process.env.END_MONGODB}`, {}, () => {
 // mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
-  console.log(mongoose.connection.readyState)
-  console.log("connected to mongoose successfully!");
+  console.log("Connect to Mongoose: ", mongoose.connection.readyState)
 })
 
 // Middleware
