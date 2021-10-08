@@ -24,14 +24,8 @@ const app = express();
 //   // perform actions on the collection object
 //   client.close();
 // });
-// mongoose.connect(`
-//     ${process.env.START_MONGODB}
-//     ${process.env.MONGODB_USERNAME}:
-//     ${process.env.MONGODB_PASSWORD}
-//     ${process.env.END_MONGODB}`, {
-// }, () => {
-mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, 
-() => {
+mongoose.connect(`${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}${process.env.END_MONGODB}`, {}, () => {
+// mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
   console.log(mongoose.connection.readyState)
   console.log("connected to mongoose successfully!");
 })
