@@ -18,6 +18,7 @@ const connectionStr = `${process.env.START_MONGODB}${process.env.MONGODB_USERNAM
 console.log(connectionStr);
 mongoose.connect(connectionStr, {}, () => {
 // mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
+  console.log(connectionStr);
   console.log("Connect to Mongoose: ", mongoose.connection.readyState)
 })
 
