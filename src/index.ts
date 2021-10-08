@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import session from 'express-session';
 import passport from 'passport'
+import User from "./User";
+import { IMongoDBUser } from "./types";
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GithubStrategy = require('passport-github').Strategy;
@@ -12,12 +14,25 @@ dotenv.config();
 
 const app = express();
 
-mongoose.connect(`
-    ${process.env.START_MONGODB}
-    ${process.env.MONGODB_USERNAME}:
-    ${process.env.MONGODB_PASSWORD}
-    ${process.env.END_MONGODB}`, {
-}, () => {
+// const { MongoClient } = require('mongodb');
+// const uri = "mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// client.connect(err => {
+//   console.log(err);
+//   const collection = client.db("oauth").collection("devices");
+//   console.log(collection);
+//   // perform actions on the collection object
+//   client.close();
+// });
+// mongoose.connect(`
+//     ${process.env.START_MONGODB}
+//     ${process.env.MONGODB_USERNAME}:
+//     ${process.env.MONGODB_PASSWORD}
+//     ${process.env.END_MONGODB}`, {
+// }, () => {
+mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, 
+() => {
+  console.log(mongoose.connection.readyState)
   console.log("connected to mongoose successfully!");
 })
 
@@ -35,12 +50,14 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-passport.serializeUser((user, done) => {
-  return done(null, user);
+passport.serializeUser((user:any, done:any) => {
+  return done(null, user._id);
 })
 
-passport.deserializeUser((user: any, done: any) => {
-  return done(null, user);
+passport.deserializeUser((id: string, done: any) => {
+  User.findById(id, (err:Error, doc: IMongoDBUser) => {
+    return done(err, doc);
+  })
 })
 
 // First name
@@ -56,8 +73,21 @@ passport.use(new GoogleStrategy({
 function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
   // successfull login
   // insert into db
-  console.log("profile is: ", profile);
-  cb(null, profile);
+  User.findOne({googleId: profile.id}, async(err:Error, doc: IMongoDBUser) => {
+    if (err){
+      return cb(err, null);
+    }
+    if (!doc) {
+      const newUser = new User({
+        googleId: profile.id,
+        username: profile.name.givenName
+      });
+      await newUser.save();
+      cb(null, newUser);
+    }
+    cb(null, doc);
+  });
+
 }
 ));
 
@@ -69,8 +99,25 @@ passport.use(new TwitterStrategy({
 function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
   // successfull login
   // insert into db
-  console.log("profile is: ", profile);
-  cb(null, profile);
+  console.log("insdie call back");
+  console.log("profile Id is: ", profile.id );
+  User.findOne({twitterId: profile.id}, async(err:Error, doc: IMongoDBUser) => {
+    console.log("inside find one", doc);
+    if (err){
+      console.log("error is", err);
+      return cb(err, null);
+    }
+    if (!doc){
+      // create new user
+      const newUser = new User({
+        twitterId: profile.id,
+        username: profile.username,
+      });
+      await newUser.save();
+      cb(null, newUser);
+    }
+    cb(null, doc);
+  });
 }
 ));
 
@@ -82,8 +129,21 @@ passport.use(new GithubStrategy({
 function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
   // successfull login
   // insert into db
-  console.log("profile is: ", profile);
-  cb(null, profile);
+  User.findOne({githubId: profile.id}, async(err:Error, doc: IMongoDBUser) => {
+    if (err){
+      return cb(err, null);
+    }
+    if (!doc){
+      // create new user
+      const newUser = new User({
+        githubId: profile.id,
+        username: profile.username,
+      });
+      await newUser.save();
+      cb(null, newUser);
+    }
+    cb(null, doc);
+  });
 }
 ));
 
@@ -124,8 +184,15 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/getuser", (req, res) => {
-  console.log("req.user is: ", req.user);
+  // console.log("req.user is: ", req.user);
   res.send(req.user);
 });
+
+app.get("/auth/logout", (req, res) => {
+  if (req.user){
+    req.logout();
+    res.send("Done");
+  }
+})
 
 app.listen(4000, () => console.log("Example app listening on port 4000!"));
