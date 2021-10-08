@@ -16,8 +16,9 @@ const app = express();
 
 const connectionStr = `${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}${process.env.END_MONGODB}`;
 console.log(connectionStr);
-mongoose.connect(connectionStr, {}, () => {
+//mongoose.connect(connectionStr, {}, () => {
 // mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
+   mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
   console.log(connectionStr);
   console.log("Connect to Mongoose: ", mongoose.connection.readyState)
 })
