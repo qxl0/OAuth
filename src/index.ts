@@ -15,13 +15,12 @@ dotenv.config();
 const app = express();
 
 const connectionStr = `${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}${process.env.END_MONGODB}`;
-console.log(connectionStr);
-//mongoose.connect(connectionStr, {}, () => {
+// console.log(connectionStr);
+mongoose.connect(connectionStr, {}, () => {
 // mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
-   mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority",  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => {
+  //  mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority",  {
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true }, () => {
   console.log(connectionStr);
   console.log("Connected to Mongoose: ", mongoose.connection.readyState)
 })
