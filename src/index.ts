@@ -18,7 +18,10 @@ const connectionStr = `${process.env.START_MONGODB}${process.env.MONGODB_USERNAM
 console.log(connectionStr);
 //mongoose.connect(connectionStr, {}, () => {
 // mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
-   mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority", {}, () => {
+   mongoose.connect("mongodb+srv://qiang:qiangli2@cluster0.n4wrt.mongodb.net/oauth?retryWrites=true&w=majority",  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => {
   console.log(connectionStr);
   console.log("Connected to Mongoose: ", mongoose.connection.readyState)
 })
