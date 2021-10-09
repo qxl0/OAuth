@@ -28,7 +28,7 @@ mongoose.connect(connectionStr, {}, () => {
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://quirky-kirch-591a42.netlify.app'],
   credentials: true
 }))
 
@@ -154,7 +154,7 @@ app.get('/auth/google/callback',
     passport.authenticate( 'google', {
         failureRedirect: '/login' }),
     function(_req, res) {
-      res.redirect('http://localhost:3000/');
+      res.redirect('https://quirky-kirch-591a42.netlify.app/');
     });
 
 app.get('/auth/twitter',
@@ -164,7 +164,7 @@ app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { failureRedirect: '/login' }),
   function(_req, res) {
     // Successful authentication, redirect home.
-    res.redirect('http://localhost:3000/');
+    res.redirect('https://quirky-kirch-591a42.netlify.app/');
   });
 
 app.get('/auth/github',
@@ -174,7 +174,7 @@ app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(_req, res) {
     // Successful authentication, redirect home.
-    res.redirect('http://localhost:3000/');
+    res.redirect('https://quirky-kirch-591a42.netlify.app/');
   });
 
 app.get("/", (_req, res) => {
