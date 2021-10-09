@@ -9,6 +9,7 @@ import { IMongoDBUser } from "./types";
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GithubStrategy = require('passport-github').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 
 dotenv.config();
 
@@ -61,7 +62,6 @@ passport.deserializeUser((id: string, done: any) => {
 // First name
 // Last name
 // ID of OAuth system 
-
 passport.use(new GoogleStrategy({
   clientID:    `${process.env.GOOGLE_CLIENT_ID}`, 
   clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
@@ -145,6 +145,35 @@ function(_accessToken: any, _refreshToken: any, profile: any, cb: any) {
 }
 ));
 
+// Facebook
+passport.use(new FacebookStrategy({
+  clientID: `${process.env.FACEBOOK_CLIENT_ID}`,
+  clientSecret: `${process.env.FACEBOOK_CLIENT_SECRET}`,
+  callbackURL: "/auth/facebook/callback"
+},
+function(_accessToken:any, _refreshToken:any, profile:any, cb:any) {
+  User.findOne({facebookId: profile.id}, async(err:Error, doc: IMongoDBUser) => {
+    if (err){
+      return cb(err, null);
+    }
+    if (!doc){
+      // create new user
+      const newUser = new User({
+        githubId: profile.id,
+        username: profile.username,
+      });
+      await newUser.save();
+      cb(null, newUser);
+    }
+    cb(null, doc);
+  }); 
+}
+));
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/login' }));
 app.get('/auth/google',
   passport.authenticate('google', { scope:
       [  'profile' ] }

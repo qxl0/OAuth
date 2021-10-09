@@ -18,6 +18,7 @@
     "@types/express-session": "^1.17.4",
     "@types/mongoose": "^5.11.97",
     "@types/passport": "^1.0.7",
+    "@types/passport-facebook": "^2.1.11",
     "@types/passport-github": "^1.1.6",
     "@types/passport-google-oauth20": "^2.0.10",
     "@types/passport-twitter": "^1.0.37",
@@ -34,8 +35,9 @@
     "express-session": "^1.17.1",
     "mongoose": "^5.13.10",
     "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-twitter": "^1.0.4"
-}
+  }
 }
